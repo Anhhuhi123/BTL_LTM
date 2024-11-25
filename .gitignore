@@ -32,3 +32,4 @@ Thumbs.db
 # Bỏ qua các file liên quan đến Maven (nếu sử dụng)
 .mvn/
 
+/.metadata/
