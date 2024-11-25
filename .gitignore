@@ -1,10 +1,34 @@
-# Bỏ qua các file và thư mục của Eclipse
-.metadata/
+# Bỏ qua thư mục và file build
+bin/
+target/
 
+# Bỏ qua các file log
+*.log
+
+# Bỏ qua các file biên dịch Java
+*.class
+
+# Giữ lại các file cấu hình cần thiết cho Eclipse
+!.classpath
+!.project
+!.settings/
+!.settings/org.eclipse.*
 
 # Bỏ qua các file hệ thống của macOS
 .DS_Store
 
-# Các file IDE khác (nếu cần)
+# Các file IDE khác
 .idea/
-*.iml 
+*.iml
+*.vscode/
+
+# Bỏ qua các file tạm thời của hệ thống
+*.tmp
+*.bak
+*.swp
+*~ 
+Thumbs.db
+
+# Bỏ qua các file liên quan đến Maven (nếu sử dụng)
+.mvn/
+
