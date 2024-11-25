@@ -1,5 +1,0 @@
-INDEX VERSION 1.134
-/Users/macbook/Desktop/BTLon_LTM/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3104404627.index
-/BTL_LTM/src/main/java
-/Users/macbook/Desktop/BTLon_LTM/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3206651189.index
-/BTL/src/main/java

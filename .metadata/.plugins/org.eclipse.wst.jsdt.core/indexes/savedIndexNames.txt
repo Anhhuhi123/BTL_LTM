@@ -1,7 +1,0 @@
-INDEX VERSION 1.4+/Users/macbook/Desktop/BTLon_LTM/BTL/.metadata/.plugins/org.eclipse.wst.jsdt.core/indexes
-196521009.index
-3206651189.index
-3299444936.index
-2227865067.index
-403874997.index
-147738886.index

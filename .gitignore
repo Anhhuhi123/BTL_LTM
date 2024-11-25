@@ -1,0 +1,16 @@
+# Bỏ qua các file và thư mục của Eclipse
+.metadata/
+*.log
+*.class
+*.settings/
+bin/
+target/
+
+# Bỏ qua các file hệ thống của macOS
+.DS_Store
+
+# Các file IDE khác (nếu cần)
+.idea/
+*.iml
+
+
