@@ -7,7 +7,7 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<% String username = request.getParameter("username");
+	<% String username = request.getParameter("email");
 		String address = (String)request.getAttribute("address");
 		String temp = (String)session.getAttribute("temp");
 	%>

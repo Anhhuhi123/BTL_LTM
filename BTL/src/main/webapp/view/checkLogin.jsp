@@ -10,7 +10,7 @@
     String PASSWORD = "";      // Thay thế bằng mật khẩu của MySQL
 
     // Lấy thông tin từ form
-    String username = request.getParameter("username");
+    String username = request.getParameter("email");
     String password = request.getParameter("password");
 
     // Khởi tạo biến trạng thái
