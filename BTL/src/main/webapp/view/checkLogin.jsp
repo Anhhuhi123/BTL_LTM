@@ -5,7 +5,7 @@
 
 <%
     // Cấu hình database
-    String DB_URL = "jdbc:mysql://localhost:3306/DULIEU"; // Đảm bảo URL đúng cú pháp
+    String DB_URL = "jdbc:mysql://localhost:3306/dulieu"; // Đảm bảo URL đúng cú pháp
     String USER_NAME = "root"; // Thay thế bằng username của MySQL
     String PASSWORD = "";      // Thay thế bằng mật khẩu của MySQL
 
