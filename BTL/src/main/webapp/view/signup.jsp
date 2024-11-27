@@ -24,7 +24,7 @@
     <div class="form-wrapper">
       <h2 class="text-center mb-4">Create Account</h2>
       <form>
-<!--         <div class="avatar-upload">
+         <div class="avatar-upload">
           <div class="avatar-preview">
             <img src="https://via.placeholder.com/150" alt="Avatar preview" id="avatarPreview">
           </div>
@@ -32,7 +32,7 @@
             <label for="avatarUpload" class="form-label">Profile Picture</label>
             <input type="file" class="form-control" id="avatarUpload" accept="image/*">
           </div>
-        </div> -->
+        </div> 
 
         <div class="form-group">
           <label for="fullName">Full Name</label>

@@ -1,4 +1,4 @@
-<%@ page language="java" import="javax.servlet.RequestDispatcher" %>
+<%-- <%@ page language="java" import="javax.servlet.RequestDispatcher" %>
 <%@ page language="java" import="javax.servlet.ServletException" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.sql.Connection, java.sql.DriverManager, java.sql.PreparedStatement, java.sql.ResultSet" %>
@@ -54,3 +54,4 @@
         response.sendRedirect("login.jsp");
     }
 %>
+ --%>
