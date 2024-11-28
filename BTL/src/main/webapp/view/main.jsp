@@ -17,7 +17,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     
     
-    <link href="./Mainn.css" rel="stylesheet">
+    <link href="../assets/Mainn.css" rel="stylesheet">
     
     
 </head>
@@ -27,7 +27,7 @@
             <i class="header-toggle d-xl-none bi bi-list"></i>
 
             <div class="profile-img">
-                <img src="./img/convertimg.png" alt="" class="img-fluid rounded-circle">
+                <img src="../assets/img/convertimg.png" alt="" class="img-fluid rounded-circle">
             </div>
 
             <a href="main.jsp" class="logo d-flex align-items-center justify-content-center">

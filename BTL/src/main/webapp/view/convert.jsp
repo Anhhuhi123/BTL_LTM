@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Conversion Progress</title>
-    <link href="./ImgConvert.css" rel="stylesheet">
+    <link href="../assets/ImgConvert.css" rel="stylesheet">
     
 </head>
 <body>
@@ -73,6 +73,6 @@
         </div>
     </div>
 
-    <script src="scripts.js"></script>
+    <script src="../JS/scripts.js"></script>
 </body>
 </html>
