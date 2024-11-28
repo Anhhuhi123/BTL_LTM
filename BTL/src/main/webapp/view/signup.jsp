@@ -15,59 +15,47 @@
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <!-- Custom CSS -->
-  <link href="auth-style.css" rel="stylesheet">
+	  <!-- Custom CSS --> 
+
+  <link href="../styles/signup.css" rel="stylesheet">
+
 </head>
 
 <body>
   <div class="form-container">
     <div class="form-wrapper">
       <h2 class="text-center mb-4">Create Account</h2>
-      <form>
-         <div class="avatar-upload">
-          <div class="avatar-preview">
-            <img src="https://via.placeholder.com/150" alt="Avatar preview" id="avatarPreview">
-          </div>
-          <div class="form-group">
-            <label for="avatarUpload" class="form-label">Profile Picture</label>
-            <input type="file" class="form-control" id="avatarUpload" accept="image/*">
-          </div>
-        </div> 
-
+      <% if (request.getAttribute("error") != null) { %>
+	    <h3 style="color: red;text-align: center; margin:0px;">
+	      <%= request.getAttribute("error") %>
+	    </h3>
+	  <% } %>
+      <form id="signupForm" method="POST" action="Register"> 
         <div class="form-group">
           <label for="fullName">Full Name</label>
-          <input type="text" class="form-control" id="fullName" placeholder="Enter your full name">
+          <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Enter your full name">
+          <span class="form-message"></span>
         </div>
 
         <div class="form-group">
           <label for="email">Email address</label>
-          <input type="email" class="form-control" id="email" placeholder="Enter email">
+          <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+          <span class="form-message"></span>
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" class="form-control" id="password" placeholder="Create password">
-          <div class="password-requirements">
-            Password must contain at least 8 characters, including uppercase, lowercase letters and numbers
-          </div>
+          <input type="password" class="form-control" id="password"  name="password" placeholder="Create password">
+          <span class="form-message"></span>
         </div>
 
         <div class="form-group">
           <label for="confirmPassword">Confirm Password</label>
-          <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password">
+          <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm password">
+          <span class="form-message"></span>
         </div>
 
-        <div class="form-group">
-          <label for="phoneNumber">Phone Number</label>
-          <input type="tel" class="form-control" id="phoneNumber" placeholder="Enter phone number">
-        </div>
-
-        <div class="form-group form-check">
-          <input type="checkbox" class="form-check-input" id="termsCheck">
-          <label class="form-check-label" for="termsCheck">I agree to the Terms and Conditions</label>
-        </div>
-
-        <button type="submit" class="btn btn-success">Create Account</button>
+        <button type="submit" class="btn btn-success btn-submit">Create Account</button>
       </form>
       
       <div class="text-center mt-3">
@@ -77,17 +65,110 @@
   </div>
 
   <script>
-    // Preview uploaded avatar image
-    document.getElementById('avatarUpload').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById('avatarPreview').src = e.target.result;
-        }
-        reader.readAsDataURL(file);
-      }
-    });
+  		const handleFullName = (value)=>{
+  			const trimValue = value.trim();
+  			if(trimValue.length === 0){
+  				return "Require";
+  			}
+  			if(value !== trimValue){
+  				return "FullName cannot have leading or trailing spaces";
+  			}
+  			if(trimValue.length < 5){
+  				return "FullName must be at least 5 characters"
+  			}
+  			return false;
+  			
+  		}
+  		const handleEmail = (value) => {
+  		  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  		  if (emailRegex.test(value.trim())) {
+  			  	return false;
+  		  } 
+  		  if(!value.trim()){
+  				return "Require";
+  		  }
+  		  else {
+  		    	return "Invalid email";
+  		  }
+  		};
+
+  		const handlePassword = (value) => {
+  		  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{5,}$/;
+  		  if (passwordRegex.test(value.trim())) {
+  		    	return false;
+  		  }
+  		  if(!value.trim()){
+				return "Require";
+		  }
+  		  else {
+  		    	return "Must be at least 5 characters, one letter, one number and one special character."
+  		  }
+  		};
+  		
+  		const handleConfirmPassword = (value) => {
+  		  const password = document.getElementById("password").value;
+
+  		  if(!value.trim()){
+  			  return "Require";
+  		  }
+  		  else if (value.trim() === password.trim()) {
+  		    return false;
+  		  }
+  		  else {
+  		    return "Password does not match";
+  		  }
+  		};
+
+    	const rules = [
+    		{
+    			title: "fullName",
+    			test: handleFullName,
+    		},
+    		 {
+    			title: "email",
+    			test: handleEmail,
+    		},
+    		{
+    			title: "password",
+    			test: handlePassword,
+    		},
+    		{
+    			title: "confirmPassword",
+    			test: handleConfirmPassword,
+    		} 
+    	];
+    	rules.forEach((rule,index)=>{
+    		const inputElement = document.getElementById(rule.title);
+    		let errorMessage;
+    		inputElement.onblur = (e)=>{
+    			errorMessage = rule.test(inputElement.value);
+    			if (errorMessage) {
+    				  inputElement.parentElement.querySelector(".form-message").textContent = errorMessage;
+    			}
+    		}
+    		inputElement.oninput = (e)=>{
+    			inputElement.parentElement.querySelector(".form-message").textContent = "";
+    		}
+    	})
+    	
+    	
+    	 const formElement = document.getElementById("signupForm");
+    		  formElement.onsubmit = (e) => {
+		      let hasError = false;
+		      rules.forEach(rule => {
+		        const inputElement = document.getElementById(rule.title);
+		        const errorMessage = rule.test(inputElement.value);
+		        const messageElement = inputElement.parentElement.querySelector(".form-message");
+		        if (errorMessage) {
+		          messageElement.textContent = errorMessage;
+		          hasError = true;
+		        }
+		      });
+		      if (hasError) {
+		        e.preventDefault(); 
+		      }
+		 };
+    	
   </script>
 </body>
 </html> 

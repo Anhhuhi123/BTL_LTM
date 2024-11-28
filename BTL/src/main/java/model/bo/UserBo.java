@@ -15,5 +15,13 @@ public class UserBo {
         }
         return userDao.validateUser(user.getEmail(), user.getPassword());
     }
+    
+    public boolean register(UserBean user) throws SQLException {
+    	  return userDao.registerUser(user.getFullname(), user.getEmail(), user.getPassword());
+    }
+    
+    public boolean checkEmailExists(UserBean user) throws Exception {
+        return userDao.isEmailExists(user.getEmail());
+    }
 }
 

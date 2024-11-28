@@ -20,7 +20,7 @@ public class LoginServlet extends HttpServlet {
         System.out.println(email);
         System.out.println(password);
 
-        UserBean user = new UserBean(email, password);
+        UserBean user = new UserBean("",email, password);
         UserBo userBo = new UserBo();
                 
         System.out.println(user.getEmail());

@@ -16,7 +16,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <!-- Custom CSS -->
-  <link href="auth-style.css" rel="stylesheet">
+  <link href="../styles/login.css" rel="stylesheet">
 </head>
 
 <body>
@@ -50,9 +50,6 @@
         
         <button type="submit" class="btn btn-primary">Login</button>
       </form>
-
-      <!-- Thêm div để hiển thị thông báo lỗi -->
-      <div id="loginMessage" class="mt-3 text-center"></div>
       
       <div class="text-center mt-3">
         <p class="text-muted">Don't have an account? <a href="signup.jsp" class="text-primary">Sign up</a></p>
