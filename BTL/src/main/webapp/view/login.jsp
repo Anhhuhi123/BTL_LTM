@@ -16,7 +16,7 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <!-- Custom CSS -->
-  <link href="auth-style.css" rel="stylesheet">
+  <link href="./auth-style.css" rel="stylesheet">
 </head>
 
 <body>
