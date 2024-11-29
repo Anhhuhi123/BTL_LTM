@@ -29,7 +29,7 @@ public class LoginServlet extends HttpServlet {
             boolean isValid = userBo.login(user);
             if (isValid) {
             	System.out.println("thong tin dang nhap hop le");
-                response.sendRedirect(request.getContextPath() + "/view/welcome.jsp");
+                response.sendRedirect(request.getContextPath() + "/view/main.jsp");
             } else {
                 request.setAttribute("error", "Thông tin đăng nhập không hợp lệ!");
                 request.getRequestDispatcher("/view/login.jsp").forward(request, response);

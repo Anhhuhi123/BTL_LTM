@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import config.DatabaseConnection;
-import model.bean.UserBean;
 
 public class UserDao {
     public boolean validateUser(String email, String password) {
