@@ -26,9 +26,9 @@
     <div class="form-wrapper">
       <h2 class="text-center mb-4">Create Account</h2>
       <% if (request.getAttribute("error") != null) { %>
-	    <h3 style="color: red;text-align: center; margin:0px;">
+	    <span style="color: red;text-align: center; margin:0px; display: block;">
 	      <%= request.getAttribute("error") %>
-	    </h3>
+	    </span>
 	  <% } %>
       <form id="signupForm" method="POST" action="Register"> 
         <div class="form-group">
@@ -59,7 +59,7 @@
       </form>
       
       <div class="text-center mt-3">
-        <p class="text-muted">Already have an account? <a href="login.jsp" class="text-success">Login here</a></p>
+        <p class="text-muted">Already have an account? <a href="./Login" class="text-success">Login here</a></p>
       </div>
     </div>
   </div>

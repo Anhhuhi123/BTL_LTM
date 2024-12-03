@@ -9,7 +9,7 @@ import config.DatabaseConnection;
 public class UserDao {
     public boolean validateUser(String email, String password) {
         boolean isValid = false;
-        String query = "SELECT * FROM admin WHERE email = ? AND password = ?";
+        String query = "SELECT * FROM user WHERE email = ? AND password = ?";
         
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {

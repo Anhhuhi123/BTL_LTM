@@ -17,14 +17,8 @@ public class RegisterServlet extends HttpServlet {
     	String fullname = request.getParameter("fullName");
     	String email = request.getParameter("email");
         String password = request.getParameter("password");
-        System.out.println(fullname);
-        System.out.println(email);
-        System.out.println(password);
-        
         UserBean user = new UserBean(fullname,email, password);
-        UserBo userBo = new UserBo();
-                
-        System.out.println(user.getEmail());
+        UserBo userBo = new UserBo();                
         try {
         	boolean emailExists = userBo.checkEmailExists(user);
         	if (emailExists) {
@@ -33,7 +27,6 @@ public class RegisterServlet extends HttpServlet {
             } else {
             	boolean isValid = userBo.register(user);
                     if (isValid) {
-                    	System.out.println("đăng kí thành công");
                         response.sendRedirect(request.getContextPath() + "/view/login.jsp");
                     } else {
                         request.setAttribute("error", "Failer register");
@@ -46,5 +39,10 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("/view/signup.jsp").forward(request, response);
         }
       }
+    
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/view/signup.jsp").forward(request, response);
+      
+    }
 }
 

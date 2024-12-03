@@ -16,28 +16,26 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        
-        System.out.println(email);
-        System.out.println(password);
 
-        UserBean user = new UserBean("",email, password);
+        UserBean user = new UserBean(email, password);
         UserBo userBo = new UserBo();
                 
-        System.out.println(user.getEmail());
 
         try {
             boolean isValid = userBo.login(user);
             if (isValid) {
-            	System.out.println("thong tin dang nhap hop le");
                 response.sendRedirect(request.getContextPath() + "/view/main.jsp");
             } else {
-                request.setAttribute("error", "Thông tin đăng nhập không hợp lệ!");
+                request.setAttribute("error", "Incorrect information or password");
                 request.getRequestDispatcher("/view/login.jsp").forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
       }
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+           request.getRequestDispatcher("/view/login.jsp").forward(request, response);
+         
+    }
 }
 

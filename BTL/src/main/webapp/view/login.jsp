@@ -24,7 +24,11 @@
     <div class="form-container">
       <div class="form-wrapper">
         <h2 class="text-center mb-4">Welcome Back</h2>
-
+		<% if (request.getAttribute("error") != null) { %>
+	    <span style="color: red;text-align: center; margin:0px; display: block;">
+	      <%= request.getAttribute("error") %>
+	    </span>
+	  	<% } %>
         <!-- Thêm id cho form và thêm action, method -->
         <form id="loginForm" action="Login" method="POST">
           <div class="form-group">
@@ -43,7 +47,7 @@
         </form>
 
         <div class="text-center mt-3">
-          <p class="text-muted">Don't have an account? <a href="signup.jsp" class="text-primary">Sign up</a></p>
+          <p class="text-muted">Don't have an account? <a href="./Register" class="text-primary">Sign up</a></p>
         </div>
       </div>
     </div>
