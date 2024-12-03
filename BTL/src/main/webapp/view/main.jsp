@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8">	
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sidebar Example</title>
 
@@ -33,7 +33,7 @@
             <a href="main.jsp" class="logo d-flex align-items-center justify-content-center">
                 <h1 class="sitename">Convert</h1>
             </a>
-
+	
             <div class="social-links text-center">
 <!--                 <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
                 <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
