@@ -28,7 +28,7 @@ public class ConvertServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 	private static final Queue<String> fileQueue = new ConcurrentLinkedQueue<>();
 	// qa nhớ đổi lại OUTPUT_DIRECTORY nếu chạy k đc nhá
-	private static final String OUTPUT_DIRECTORY = "/Users/macbook/Desktop/TestConvert/Test_Convert/src/Convert/";
+	private static final String OUTPUT_DIRECTORY = "/Users/macbook/Desktop";
 	// OUTPUT_DIRECTORY của tien
 	//	private static final String OUTPUT_DIRECTORY = "C:\\Users\\nguye\\OneDrive\\Desktop\\ltm\\BTL_LTM\\BTL\\src\\main\\webapp";
     @Override
