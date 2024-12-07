@@ -12,10 +12,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @WebServlet("/view/convert")
 @MultipartConfig(
@@ -23,14 +28,12 @@ import java.util.concurrent.ConcurrentLinkedQueue;
     maxFileSize = 1024 * 1024 * 10, // 10MB
     maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
+
 public class ConvertServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-	private static final Queue<String> fileQueue = new ConcurrentLinkedQueue<>();
-	// qa nhớ đổi lại OUTPUT_DIRECTORY nếu chạy k đc nhá
-	private static final String OUTPUT_DIRECTORY = "/Users/macbook/Desktop/TestConvert/Test_Convert/src/Convert/";
-	// OUTPUT_DIRECTORY của tien
-	//	private static final String OUTPUT_DIRECTORY = "C:\\Users\\nguye\\OneDrive\\Desktop\\ltm\\BTL_LTM\\BTL\\src\\main\\webapp";
+    private static final Queue<Part> fileQueue = new ConcurrentLinkedQueue<>();
+    
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
@@ -38,132 +41,124 @@ public class ConvertServlet extends HttpServlet {
         
         StringBuilder jsonResponse = new StringBuilder();
         System.out.println("Nhận được tín hiệu từ client");
-
-        File outputDir = new File(OUTPUT_DIRECTORY);
-        if (!outputDir.exists() && !outputDir.mkdirs()) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            jsonResponse.append("{");
-            jsonResponse.append("\"status\":\"error\",");
-            jsonResponse.append("\"message\":\"Không thể tạo thư mục đầu ra.\"");
-            jsonResponse.append("}");
-            resp.getWriter().write(jsonResponse.toString());
-            return;
+        System.out.println("Nhận được tín hiệu từ client111");
+        System.out.println(req.getParts());
+        for (Part part : req.getParts()) {
+            System.out.println("Submitted file name: " + part.getName());
         }
 
         try {
-            StringBuilder filesReceived = new StringBuilder();
+            // Xử lý file gửi từ client
+            Queue<Part> fileQueue = new ConcurrentLinkedQueue<>();
             for (Part part : req.getParts()) {
                 if (part.getName().equals("file")) {
-                    String fileName = extractFileName(part);
-                    String filePath = OUTPUT_DIRECTORY + fileName;
-                    part.write(filePath);
-                    fileQueue.add(filePath);
-                    DatabaseHandler.insertFile(fileName, filePath);
-                    filesReceived.append(fileName).append(", ");
+                    fileQueue.add(part); // Thêm phần tử vào Queue
                 }
             }
-            processFiles();
 
-            jsonResponse.append("{");
-            jsonResponse.append("\"status\":\"success\",");
-            jsonResponse.append("\"message\":\"Tải lên thành công\",");
-            jsonResponse.append("\"files\":\"").append(filesReceived.toString().isEmpty() ? "No files uploaded" : filesReceived.toString()).append("\"");
-            jsonResponse.append("}");
+            if (!fileQueue.isEmpty()) {
+                // Trường hợp 1: Chuyển đổi một file duy nhất
+                if (fileQueue.size() == 1) {
+                    Part part = fileQueue.poll(); // Lấy phần tử đầu tiên ra khỏi Queue
+                    InputStream inputStream = part.getInputStream();
+                    String fileName = extractFileName(part);
+                    if (!fileName.endsWith(".pdf")) {
+                        jsonResponse.append("{");
+                        jsonResponse.append("\"status\":\"error\",");
+                        jsonResponse.append("\"message\":\"Chỉ chấp nhận tệp PDF.\"");
+                        jsonResponse.append("}");
+                        resp.getWriter().write(jsonResponse.toString());
+                        return;
+                    }
+
+                    // Chuyển đổi PDF sang Word trong bộ nhớ
+                    ByteArrayOutputStream wordOutputStream = new ByteArrayOutputStream();
+                    processPdfToWord(inputStream, wordOutputStream);
+
+                    // Gửi file Word về cho client
+                    resp.setContentType("application/msword");
+                    resp.setHeader("Content-Disposition", "attachment; filename=" + fileName.replace(".pdf", ".doc"));
+                    wordOutputStream.writeTo(resp.getOutputStream());
+                    return;
+                }
+
+                // Trường hợp 2: Chuyển đổi nhiều file và gom chúng vào file ZIP
+                else if (fileQueue.size() > 1) {
+                    // Tạo một ByteArrayOutputStream để chứa ZIP
+                    ByteArrayOutputStream zipOutputStream = new ByteArrayOutputStream();
+                    try (ZipOutputStream zipStream = new ZipOutputStream(zipOutputStream)) {
+                        while (!fileQueue.isEmpty()) {
+                            Part part = fileQueue.poll(); // Lấy phần tử đầu tiên ra khỏi Queue
+                            InputStream inputStream = part.getInputStream();
+                            String fileName = extractFileName(part);
+                            if (!fileName.endsWith(".pdf")) {
+                                jsonResponse.append("{");
+                                jsonResponse.append("\"status\":\"error\",");
+                                jsonResponse.append("\"message\":\"Chỉ chấp nhận tệp PDF.\"");
+                                jsonResponse.append("}");
+                                resp.getWriter().write(jsonResponse.toString());
+                                return;
+                            }
+
+                            // Chuyển đổi PDF sang Word và lưu vào ZIP
+                            ByteArrayOutputStream wordOutputStream = new ByteArrayOutputStream();
+                            processPdfToWord(inputStream, wordOutputStream);
+                            zipStream.putNextEntry(new ZipEntry(fileName.replace(".pdf", ".doc")));
+                            wordOutputStream.writeTo(zipStream);
+                            zipStream.closeEntry();
+                        }
+                    }
+
+                    // Gửi file ZIP về cho client
+                    resp.setContentType("application/zip");
+                    resp.setHeader("Content-Disposition", "attachment; filename=converted_files.zip");
+                    zipOutputStream.writeTo(resp.getOutputStream());
+                    return;
+                }
+            } else {
+                // Trường hợp không có file nào được gửi
+                jsonResponse.append("{");
+                jsonResponse.append("\"status\":\"error\",");
+                jsonResponse.append("\"message\":\"Không có tệp PDF nào được gửi.\"");
+                jsonResponse.append("}");
+                resp.getWriter().write(jsonResponse.toString());
+                return;
+            }
         } catch (Exception e) {
-            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             jsonResponse.append("{");
             jsonResponse.append("\"status\":\"error\",");
-            jsonResponse.append("\"message\":\"Lỗi khi xử lý upload: ").append(e.getMessage()).append("\"");
+            jsonResponse.append("\"message\":\"Lỗi khi xử lý: ").append(e.getMessage()).append("\"");
             jsonResponse.append("}");
         }
 
         resp.getWriter().write(jsonResponse.toString());
     }
 
-
-//    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        resp.setContentType("text/plain");
-//        StringBuilder responseMessage = new StringBuilder();
-//        
-//        System.out.println("nhan dc tin hieu tu client");
-//
-//        // Đảm bảo thư mục đầu ra tồn tại
-//        File outputDir = new File(OUTPUT_DIRECTORY);
-//        if (!outputDir.exists() && !outputDir.mkdirs()) {
-//            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-//            resp.getWriter().write("Không thể tạo thư mục đầu ra.");
-//            return;
-//        }
-//
-//        try {
-//            // Xử lý từng file được upload
-//            for (Part part : req.getParts()) {
-//                if (part.getName().equals("file")) {
-//                    // Lưu file vào thư mục tạm thời
-//                    String fileName = extractFileName(part);
-//                    String filePath = OUTPUT_DIRECTORY + fileName;
-//                    part.write(filePath);
-//
-//                    // Thêm file vào hàng đợi
-//                    fileQueue.add(filePath);
-//                    DatabaseHandler.insertFile(fileName, filePath);
-//                    responseMessage.append("File nhận: ").append(fileName).append("\n");
-//                }
-//            }
-//
-//            // Bắt đầu xử lý file
-//            processFiles();
-//
-//            resp.getWriter().write(responseMessage.toString());
-//        } catch (Exception e) {
-//            resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-//            resp.getWriter().write("Lỗi khi xử lý upload: " + e.getMessage());
-//        }
-//    }
-
-    private void processFiles() {
-        while (!fileQueue.isEmpty()) {
-            String filePath = fileQueue.poll();
-            try {
-                File pdfFile = new File(filePath);
-                if (!pdfFile.exists()) {
-                    throw new Exception("File PDF không tồn tại: " + filePath);
-                }
-
-                // Tải tài liệu PDF
-                Document pdfDocument = new Document(filePath);
-
-                // Cấu hình tùy chọn lưu
-                DocSaveOptions saveOptions = new DocSaveOptions();
-                saveOptions.setFormat(DocSaveOptions.DocFormat.Doc);
-                saveOptions.setMode(DocSaveOptions.RecognitionMode.Flow);
-                saveOptions.setRecognizeBullets(true);
-
-                // Tạo tên file Word đầu ra
-                String wordPath = OUTPUT_DIRECTORY + "Converted_" + System.currentTimeMillis() + "_" + pdfFile.getName().replace(".pdf", ".doc");
-
-                // Chuyển đổi PDF sang Word
-                pdfDocument.save(wordPath, saveOptions);
-
-                System.out.println("Chuyển đổi thành công: " + wordPath);
-
-                // Cập nhật trạng thái trong cơ sở dữ liệu
-                DatabaseHandler.updateState(filePath, "SUCCESS");
-                
-            } catch (Exception e) {
-                System.err.println("Lỗi khi xử lý file " + filePath + ": " + e.getMessage());
-                DatabaseHandler.updateState(filePath, "FAILED");
-            }
-        }
-    }	
+    private void processPdfToWord(InputStream pdfInputStream, ByteArrayOutputStream wordOutputStream) throws Exception {
+        // Tạo một tài liệu PDF từ InputStream
+        Document pdfDocument = new Document(pdfInputStream);
+        
+        // Cấu hình tùy chọn lưu
+        DocSaveOptions saveOptions = new DocSaveOptions();
+        saveOptions.setFormat(DocSaveOptions.DocFormat.Doc);
+        saveOptions.setMode(DocSaveOptions.RecognitionMode.Flow);
+        saveOptions.setRecognizeBullets(true);
+        
+        // Lưu tài liệu Word vào ByteArrayOutputStream
+        pdfDocument.save(wordOutputStream, saveOptions);
+    }
 
     private String extractFileName(Part part) {
         String contentDisposition = part.getHeader("content-disposition");
+        System.out.println(contentDisposition);
+        System.out.println("Submitted file name abcd" );
         for (String content : contentDisposition.split(";")) {
             if (content.trim().startsWith("filename")) {
+                System.out.println("Submitted file name abcde" );
                 return content.substring(content.indexOf("=") + 2, content.length() - 1);
             }
         }
         return "unknown";
     }
 }
+
