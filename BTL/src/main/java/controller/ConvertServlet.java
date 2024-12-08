@@ -3,6 +3,7 @@ package controller;
 import com.aspose.pdf.DocSaveOptions;
 import com.aspose.pdf.Document;
 
+import model.bo.ConvertThread;
 import model.dao.DatabaseHandler;
 
 import javax.servlet.ServletException;
@@ -73,8 +74,9 @@ public class ConvertServlet extends HttpServlet {
 
                     // Chuyển đổi PDF sang Word trong bộ nhớ
                     ByteArrayOutputStream wordOutputStream = new ByteArrayOutputStream();
+                    
                     processPdfToWord(inputStream, wordOutputStream);
-
+                  
                     // Gửi file Word về cho client
                     resp.setContentType("application/msword");
                     resp.setHeader("Content-Disposition", "attachment; filename=" + fileName.replace(".pdf", ".doc"));
@@ -162,3 +164,110 @@ public class ConvertServlet extends HttpServlet {
     }
 }
 
+
+
+// @WebServlet("/view/convert")
+// @MultipartConfig(
+//     fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+//     maxFileSize = 1024 * 1024 * 10, // 10MB
+//     maxRequestSize = 1024 * 1024 * 50 // 50MB
+// )
+// public class ConvertServlet extends HttpServlet {
+
+//     private static final long serialVersionUID = 1L;
+//     private static final Queue<Part> fileQueue = new ConcurrentLinkedQueue<>();
+
+//     @Override
+//     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//         resp.setContentType("application/json");
+//         resp.setCharacterEncoding("UTF-8");
+
+//         StringBuilder jsonResponse = new StringBuilder();
+//         try {
+//             // Xử lý file gửi từ client
+//             for (Part part : req.getParts()) {
+//                 if (part.getName().equals("file")) {
+//                     fileQueue.add(part); // Thêm phần tử vào Queue
+//                 }
+//             }
+
+//             if (!fileQueue.isEmpty()) {
+//                 ArrayList<String> docFilePaths = new ArrayList<>();
+
+//                 // Chuyển đổi từng file PDF sang DOCX
+//                 while (!fileQueue.isEmpty()) {
+//                     Part part = fileQueue.poll();
+//                     String fileName = extractFileName(part);
+//                     if (!fileName.endsWith(".pdf")) {
+//                         jsonResponse.append("{");
+//                         jsonResponse.append("\"status\":\"error\",");
+//                         jsonResponse.append("\"message\":\"Chỉ chấp nhận tệp PDF.\"");
+//                         jsonResponse.append("}");
+//                         resp.getWriter().write(jsonResponse.toString());
+//                         return;
+//                     }
+
+//                     // Tạo một thread để chuyển đổi file PDF sang DOCX
+//                     ConvertThread convertThread = new ConvertThread(part.getInputStream(), docFilePaths, fileName);
+//                     convertThread.start();
+//                     convertThread.join(); // Chờ cho thread hoàn thành
+//                 }
+
+//                 // Tạo file ZIP chứa các file DOCX
+//                 String zipFilePath = "output/converted_files.zip"; // Đường dẫn file ZIP
+//                 try (FileOutputStream fos = new FileOutputStream(zipFilePath);
+//                      ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+//                     for (String docFilePath : docFilePaths) {
+//                         File docFile = new File(docFilePath);
+//                         try (FileInputStream fis = new FileInputStream(docFile)) {
+//                             ZipEntry zipEntry = new ZipEntry(docFile.getName());
+//                             zipOut.putNextEntry(zipEntry);
+//                             byte[] bytes = new byte[1024];
+//                             int length;
+//                             while ((length = fis.read(bytes)) >= 0) {
+//                                 zipOut.write(bytes, 0, length);
+//                             }
+//                             zipOut.closeEntry();
+//                         }
+//                     }
+//                 }
+
+//                 // Gửi file ZIP về cho client
+//                 resp.setContentType("application/zip");
+//                 resp.setHeader("Content-Disposition", "attachment; filename=converted_files.zip");
+//                 try (FileInputStream fis = new FileInputStream(zipFilePath)) {
+//                     byte[] buffer = new byte[1024];
+//                     int bytesRead;
+//                     while ((bytesRead = fis.read(buffer)) != -1) {
+//                         resp.getOutputStream().write(buffer, 0, bytesRead);
+//                     }
+//                 }
+//                 return;
+//             } else {
+//                 jsonResponse.append("{");
+//                 jsonResponse.append("\"status\":\"error\",");
+//                 jsonResponse.append("\"message\":\"Không có tệp PDF nào được gửi.\"");
+//                 jsonResponse.append("}");
+//                 resp.getWriter().write(jsonResponse.toString());
+//                 return;
+//             }
+//         } catch (Exception e) {
+//             jsonResponse.append("{");
+//             jsonResponse.append("\"status\":\"error\",");
+//             jsonResponse.append("\"message\":\"Lỗi khi xử lý: ").append(e.getMessage()).append("\"");
+//             jsonResponse.append("}");
+//         }
+
+//         resp.getWriter().write(jsonResponse.toString());
+//     }
+
+//     private String extractFileName(Part part) {
+//         String contentDisposition = part.getHeader("content-disposition");
+//         for (String content : contentDisposition.split(";")) {
+//             if (content.trim().startsWith("filename")) {
+//                 return content.substring(content.indexOf("=") + 2, content.length() - 1);
+//             }
+//         }
+//         return "unknown";
+//     }
+// }
