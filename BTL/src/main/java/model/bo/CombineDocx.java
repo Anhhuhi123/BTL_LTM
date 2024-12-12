@@ -6,8 +6,10 @@ import com.spire.doc.Document;
 import com.spire.doc.FileFormat;
 import com.spire.doc.Section;
 
+
 public class CombineDocx {
 	// nộp file nhỏ lại
+
 	public static void combineFiles(ArrayList<String> docFilePaths, String output) {
 		Thread combineDocxThread = new Thread(() -> {
 			Document firstDocument = new Document();
@@ -20,9 +22,11 @@ public class CombineDocx {
 				// Merge files
 				for (Object sectionObj : documentMerge.getSections()) {
 					Section section = (Section) sectionObj;
+
 					// Bạn có thể thao tác với mỗi Section tại đây
 					System.out.println("Processing a section...");
 					System.out.println("Processing a section..."+section.deepClone());
+
 
 					firstDocument.getSections().add(section.deepClone());
 				}
@@ -37,7 +41,9 @@ public class CombineDocx {
 			// Đảm bảo các luồng convert file pdf qua docx, comvbine file docx đã hoàn thành
 			// mới thực hện đi xoá các file tạo ra trong quá trình làm
 			combineDocxThread.join();
-//			deleteTemporalFiles(docFilePaths);
+
+			// deleteTemporalFiles(docFilePaths);
+
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -50,3 +56,5 @@ public class CombineDocx {
 		}
 	}
 }
+
+
