@@ -10,7 +10,7 @@ public class UserDao {
     public boolean validateUser(String email, String password) {
         boolean isValid = false;
         String query = "SELECT * FROM user WHERE email = ? AND password = ?";
-        
+
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, email);
@@ -25,11 +25,11 @@ public class UserDao {
         }
         return isValid;
     }
-    
+
     public boolean registerUser(String fullname, String email, String password) {
         boolean isValid = false;
         String query = "INSERT INTO user (fullname, email, password) VALUES (?, ?, ?)";
-        
+
         try (Connection connection = DatabaseConnection.getConnection();
         		PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, fullname);
@@ -39,14 +39,14 @@ public class UserDao {
             int rowsAffected = preparedStatement.executeUpdate();
 
             if (rowsAffected > 0) {
-                isValid = true;  
+                isValid = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return isValid;
     }
-    
+
     public boolean isEmailExists(String email) {
     	boolean isValid = false;
         String query = "SELECT COUNT(*) FROM user WHERE email = ?";
@@ -54,15 +54,15 @@ public class UserDao {
         	PreparedStatement preparedStatement = connection.prepareStatement(query)){
         	preparedStatement.setString(1, email);
         	 ResultSet resultSet = preparedStatement.executeQuery();
-        	 if (resultSet.next()) { 
-                 int count = resultSet.getInt(1); 
-                 isValid = count > 0; 
+        	 if (resultSet.next()) {
+                 int count = resultSet.getInt(1);
+                 isValid = count > 0;
              }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
         return isValid;
-       
+
     }
 
 }

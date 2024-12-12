@@ -1,9 +1,12 @@
 package controller;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
 import java.io.IOException;
+
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import model.bean.UserBean;
 import model.bo.UserBo;
@@ -11,14 +14,14 @@ import model.bo.UserBo;
 
 @WebServlet("/view/Register")
 public class RegisterServlet extends HttpServlet {
-	
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String fullname = request.getParameter("fullName");
     	String email = request.getParameter("email");
         String password = request.getParameter("password");
         UserBean user = new UserBean(fullname,email, password);
-        UserBo userBo = new UserBo();                
+        UserBo userBo = new UserBo();
         try {
         	boolean emailExists = userBo.checkEmailExists(user);
         	if (emailExists) {
@@ -39,10 +42,11 @@ public class RegisterServlet extends HttpServlet {
             request.getRequestDispatcher("/view/signup.jsp").forward(request, response);
         }
       }
-    
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+    @Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("/view/signup.jsp").forward(request, response);
-      
+
     }
 }
 

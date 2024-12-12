@@ -6,12 +6,12 @@ public class UserBean {
     private String password;
 
     public UserBean() {}
-    
+
     public UserBean(String email, String password) {
         this.email = email;
         this.password = password;
     }
-    
+
     public UserBean(String fullname,String email, String password) {
     	this.fullname = fullname;
         this.email = email;
