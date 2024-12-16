@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -22,7 +24,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
+import model.bean.HistoryBean;
+import model.bean.UserBean;
 import model.bo.ConverterThread;
+import model.bo.HistoryBo;
+import model.bo.UserBo;
 
 
 
@@ -38,7 +44,7 @@ public class ConvertServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		
 	}
 
 	@Override
@@ -51,6 +57,7 @@ public class ConvertServlet extends HttpServlet {
 		String fileNameUserUpload = "";
 		System.out.println("Nhận được dữ liệu");
 		List<ConverterThread> threads = new ArrayList<>();
+		List<String> filesNameUserUpload =  new ArrayList<>();
 		List<String> filesNameInServer =  new ArrayList<>();
 		for (Part part : parts) {
 			// kiểm tra xem thử client gửi đúng file pdf chưa?
@@ -59,7 +66,7 @@ public class ConvertServlet extends HttpServlet {
 			    System.out.println("Tệp không hợp lệ: " + contentType);
 			    continue;
 			}
-			
+
 			// chỉ định đường dẫn tuyệt đối
 			String folderUpload = request.getServletContext().getRealPath("/DemoUpload");
 
@@ -72,9 +79,9 @@ public class ConvertServlet extends HttpServlet {
 			}
 			// 	Lấy tên file (phần cuối của đường dẫn)
 			fileNameUserUpload = Path.of(submittedFileName).getFileName().toString();
-
+			filesNameUserUpload.add(fileNameUserUpload);
+			// Tên file lưu ở server
 			fileNameInServer = now.getTime() + "_" + fileNameUserUpload;
-
 			filesNameInServer.add(fileNameInServer);
 			if (!Files.exists(Path.of(folderUpload))) {
 				// tạo thư mục ở đường dẫn đã chỉ định
@@ -100,20 +107,40 @@ public class ConvertServlet extends HttpServlet {
 		            e.printStackTrace();
 		    }
 		}
+		// lưu data vào trong db
+		saveHistoryConvert(request,filesNameUserUpload,filesNameInServer);
+		// respone về cho client 
 		sendFileConvertToClient(request,response,filesNameInServer);
 
 	}
+	
+	private void saveHistoryConvert(HttpServletRequest request,List<String> filesNameUserUpload,List<String> filesNameInServer) {
+		for(int i=0 ; i < filesNameUserUpload.size();i++) {
+			int userId = (int) request.getSession().getAttribute("userId");
+			HistoryBean history = new HistoryBean(userId,filesNameUserUpload.get(i),filesNameInServer.get(i).replace(".pdf", ".docx"));
+			HistoryBo historyBo = new HistoryBo();
+			try {
+				if(historyBo.saveHistory(history)) {
+					System.out.println("da them record thu " + (i + 1));
 
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+	}
+	
 	private void sendFileConvertToClient(HttpServletRequest request, HttpServletResponse response, List<String> filesNameInServer) throws IOException {
-	    // Kiểm tra xem có nhiều hơn 1 tệp hay không
+		   // Kiểm tra xem có nhiều hơn 1 tệp hay không
 	    if (filesNameInServer.size() > 1) {
-	        // Đặt tên tệp ZIP
+	        // Đặt tên tệp ZIP cho client
 	        String zipFileName = "converted_files_" + System.currentTimeMillis() + ".zip";
-	        String zipFilePath = request.getServletContext().getRealPath("/DemoUpload") + "/" + zipFileName;
 
-	        // Tạo tệp ZIP và thêm các tệp vào đó
-	        try (FileOutputStream fos = new FileOutputStream(zipFilePath);
-	             ZipOutputStream zos = new ZipOutputStream(fos)) {
+	        // Tạo tệp ZIP trong bộ nhớ
+	        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	             ZipOutputStream zos = new ZipOutputStream(baos)) {
 
 	            // Duyệt qua các tệp trong danh sách
 	            for (String fileNameInServer : filesNameInServer) {
@@ -135,10 +162,12 @@ public class ConvertServlet extends HttpServlet {
 	                    }
 	                }
 	            }
-	        }
 
-	        // Gửi tệp ZIP tới client
-	        sendFileToClient(zipFilePath, response, zipFileName);
+	            zos.finish();
+
+	            // Gửi tệp ZIP tới client từ bộ nhớ
+	            sendZipToClient(baos, response, zipFileName);
+	        }
 	    } else {
 	        // Nếu chỉ có một tệp, gửi tệp đó trực tiếp
 	        String fileNameInServer = filesNameInServer.get(0).replace(".pdf", ".docx");
@@ -150,7 +179,6 @@ public class ConvertServlet extends HttpServlet {
 
 	private void sendFileToClient(String filePath, HttpServletResponse response, String fileName) throws IOException {
 	    File file = new File(filePath);
-
 	    // Kiểm tra sự tồn tại của tệp
 	    if (!file.exists()) {
 	        response.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found.");
@@ -180,7 +208,19 @@ public class ConvertServlet extends HttpServlet {
 	        System.out.println("Tổng bytes đã gửi: " + total);
 	    }
 	}
+	private void sendZipToClient(ByteArrayOutputStream baos, HttpServletResponse response, String zipFileName) throws IOException {
+	    // Đặt Content-Type là ZIP
+	    response.setContentType("application/zip");
+	    response.setHeader("Content-Disposition", "attachment; filename=" + zipFileName);
+	    response.setContentLength(baos.size());
 
+	    // Gửi dữ liệu từ ByteArrayOutputStream tới client
+	    try (OutputStream outputStream = response.getOutputStream()) {
+	        baos.writeTo(outputStream);
+	        outputStream.flush();
+	    }
+	}
+	
 	// Phương thức xác định loại tệp dựa trên phần mở rộng
 	private String getContentType(String fileName) {
 	    if (fileName.endsWith(".zip")) {

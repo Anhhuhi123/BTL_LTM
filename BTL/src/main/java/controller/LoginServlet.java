@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -8,14 +9,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import model.bean.HistoryBean;
 import model.bean.UserBean;
+import model.bo.HistoryBo;
 import model.bo.UserBo;
 
 
 @WebServlet("/view/Login")
 public class LoginServlet extends HttpServlet {
 
-    @Override 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -25,8 +28,14 @@ public class LoginServlet extends HttpServlet {
 
 
         try {
-            boolean isValid = userBo.login(user);
-            if (isValid) {
+            UserBean existUser = userBo.login(user);
+            if (existUser!=null) {
+            	// tạo session cho user
+            	request.getSession().setAttribute("userId", existUser.getId());
+            	request.getSession().setAttribute("fullname", existUser.getFullname());
+            	request.getSession().setAttribute("email", email);
+
+				
                 response.sendRedirect(request.getContextPath() + "/view/main.jsp");
             } else {
                 request.setAttribute("error", "Incorrect information or password");

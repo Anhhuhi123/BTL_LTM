@@ -1,6 +1,7 @@
 package model.bean;
 
 public class UserBean {
+	private int id;
 	private String fullname;
     private String email;
     private String password;
@@ -17,8 +18,23 @@ public class UserBean {
         this.email = email;
         this.password = password;
     }
+    
+    public UserBean(int id,String fullname,String email, String password) {
+    	this.id = id;
+    	this.fullname = fullname;
+        this.email = email;
+        this.password = password;
+    }
 
     // Getter và Setter
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     public String getFullname() {
         return fullname;
     }

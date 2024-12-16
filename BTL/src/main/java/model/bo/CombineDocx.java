@@ -1,5 +1,8 @@
 package model.bo;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.spire.doc.Document;
@@ -37,16 +40,24 @@ public class CombineDocx {
 			// Đảm bảo các luồng convert file pdf qua docx, comvbine file docx đã hoàn thành
 			// mới thực hện đi xoá các file tạo ra trong quá trình làm
 			combineDocxThread.join();
-//			deleteTemporalFiles(docFilePaths);
+			deleteTemporalFiles(docFilePaths);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
 	private static void deleteTemporalFiles(ArrayList<String> temporalFiles) {
+		// xóa từng file nhỏ đã chia ra để convert
 		for (String filePath : temporalFiles) {
-//			Utils.deleteFile(filePath);
-//			Utils.deleteFile(filePath.replace(".docx", ".pdf"));
+			try {
+				Path pathDocx = Paths.get(filePath);
+				Path pathPdf = Paths.get(filePath.replace(".docx", ".pdf"));
+				Files.deleteIfExists(pathDocx);
+				Files.deleteIfExists(pathPdf);
+
+			} catch (Exception e) {
+				System.err.println(e.getMessage());
+			}
 		}
 	}
 }

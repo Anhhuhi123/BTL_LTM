@@ -35,11 +35,6 @@
             </a>
 	
             <div class="social-links text-center">
-<!--                 <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
-                <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-                <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-                <a href="#" class="google-plus"><i class="bi bi-skype"></i></a>
-                <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a> -->
                 
                 <a  class="twitter"><i class="bi bi-twitter-x"></i></a>
                 <a  class="facebook"><i class="bi bi-facebook"></i></a>
@@ -51,9 +46,9 @@
             <nav id="navmenu" class="navmenu">
                 <ul>
                     <li><a href="test.jsp" class="nav-link active"><i class="bi bi-house navicon"></i>Home</a></li>
-                    <li><a href="#services"><i class="bi bi-hdd-stack navicon"></i> Services</a></li>
+                    <li><a href="./historyConvert"><i class="bi bi-hdd-stack navicon"></i> History</a></li>
                     <li><a href="#contact"><i class="bi bi-gear navicon"></i> Setting</a></li>
-                    <li><a href="login.jsp"><i class="bi bi-box-arrow-right navicon"></i> Log out</a></li>
+                    <li><a href="./logout"><i class="bi bi-box-arrow-right navicon"></i> Log out</a></li>
                     
                 </ul>
             </nav>
