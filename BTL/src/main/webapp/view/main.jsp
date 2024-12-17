@@ -16,9 +16,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     
-    
     <link href="../assets/Mainn.css" rel="stylesheet">
-    
     
 </head>
 <body>
@@ -35,21 +33,19 @@
             </a>
 	
             <div class="social-links text-center">
-                
-                <a  class="twitter"><i class="bi bi-twitter-x"></i></a>
-                <a  class="facebook"><i class="bi bi-facebook"></i></a>
-                <a  class="instagram"><i class="bi bi-instagram"></i></a>
-                <a  class="google-plus"><i class="bi bi-skype"></i></a>
-                <a  class="linkedin"><i class="bi bi-linkedin"></i></a>
+                <a class="twitter"><i class="bi bi-twitter-x"></i></a>
+                <a class="facebook"><i class="bi bi-facebook"></i></a>
+                <a class="instagram"><i class="bi bi-instagram"></i></a>
+                <a class="google-plus"><i class="bi bi-skype"></i></a>
+                <a class="linkedin"><i class="bi bi-linkedin"></i></a>
             </div>
 
             <nav id="navmenu" class="navmenu">
                 <ul>
                     <li><a href="test.jsp" class="nav-link active"><i class="bi bi-house navicon"></i>Home</a></li>
-                    <li><a href="./historyConvert"><i class="bi bi-hdd-stack navicon"></i> History</a></li>
-                    <li><a href="#contact"><i class="bi bi-gear navicon"></i> Setting</a></li>
-                    <li><a href="./logout"><i class="bi bi-box-arrow-right navicon"></i> Log out</a></li>
-                    
+                    <li><a href="./historyConvert" class="nav-link" data-page="historyConvert.jsp"><i class="bi bi-hdd-stack navicon"></i> History</a></li>
+<!--                     <li><a href="#contact" class="nav-link"><i class="bi bi-gear navicon"></i> Setting</a></li>
+ -->                    <li><a href="./login.jsp" class="nav-link"><i class="bi bi-box-arrow-right navicon"></i> Log out</a></li>
                 </ul>
             </nav>
         </header>
@@ -62,59 +58,29 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Thêm jQuery -->
+    <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Update JavaScript -->
-    <script>
-        (function() {
-            "use strict";
+    <!-- Main JavaScript -->
+    <script src="../JS/main.js"></script>
+    <!-- <script>
+        $('.nav-link').click(function(e) {
+            e.preventDefault();
             
-            // Header toggle function
-            const headerToggleBtn = document.querySelector('.header-toggle');
-            function headerToggle() {
-                document.querySelector('#header').classList.toggle('header-show');
-                headerToggleBtn.classList.toggle('bi-list');
-                headerToggleBtn.classList.toggle('bi-x');
+            // Xóa lớp active khỏi tất cả các liên kết
+            $('.nav-link').removeClass('active');
+            // Thêm lớp active vào liên kết đã nhấn
+            $(this).addClass('active');
+            
+            // Tải nội dung
+            const page = $(this).data('page');
+            loadContent(page);
+            
+            // Đóng menu di động nếu đang mở
+            if (document.querySelector('.header-show')) {
+                headerToggle();
             }
-            headerToggleBtn.addEventListener('click', headerToggle);
-
-            // Load content function
-            function loadContent(url) {
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    success: function(response) {
-                        $('#content-container').html(response);
-                    },
-                    error: function() {
-                        $('#content-container').html('<p>Error loading content</p>');
-                    }
-                });
-            }
-
-            // Navigation click handlers
-            $('.nav-link').click(function(e) {
-                e.preventDefault();
-                
-                // Remove active class from all links
-                $('.nav-link').removeClass('active');
-                // Add active class to clicked link
-                $(this).addClass('active');
-                
-                // Load content
-                const page = $(this).data('page');
-                loadContent(page);
-                
-                // Close mobile menu if open
-                if (document.querySelector('.header-show')) {
-                    headerToggle();
-                }
-            });
-
-            // Load home content by default
-            loadContent('convert.jsp');
-        })();
-    </script>
+        });
+    </script> -->
 </body>
 </html>
