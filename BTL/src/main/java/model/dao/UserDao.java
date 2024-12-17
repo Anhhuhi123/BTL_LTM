@@ -3,9 +3,6 @@ package model.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import config.DatabaseConnection;
 import model.bean.UserBean;
@@ -33,7 +30,7 @@ public class UserDao {
         }
         return user;
     }
-    
+
     public boolean isEmailExists(String email) {
     	boolean isValid = false;
         String query = "SELECT COUNT(*) FROM user WHERE email = ?";
@@ -51,7 +48,7 @@ public class UserDao {
         return isValid;
 
     }
-    
+
     public boolean registerUser(String fullname, String email, String password) {
         boolean isValid = false;
         String query = "INSERT INTO user (fullname, email, password) VALUES (?, ?, ?)";

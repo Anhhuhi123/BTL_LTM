@@ -140,7 +140,16 @@
     background: #888;
     border-radius: 3px;
 }
-
+.welcome-user{
+	position: absolute; /* Định vị tương đối so với phần tử chứa nó */
+    top: 10px;             /* Căn sát lề trên cùng */
+    right: 10px;           /* Căn sát lề bên phải */
+    padding: 10px;      /* Khoảng cách bên trong cho đẹp */
+    background-color: #f0f0f0; /* Màu nền nhẹ */
+    border-radius: 5px; /* Bo góc nhẹ */
+    font-size: 16px;    /* Cỡ chữ */
+    color: #333;
+}
 /* Responsive Design */
 @media (max-width: 768px) {
     .convert-page .progress-container {

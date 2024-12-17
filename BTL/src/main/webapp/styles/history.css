@@ -1,0 +1,84 @@
+		body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 14px;
+            color: white;
+            background-color: #007bff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .btn-container {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+        .btn-back {
+		    display: inline-block;
+		    padding: 10px 20px;
+		    font-size: 14px;
+		    color: white;
+		    background-color: #28a745; /* Màu xanh lá */
+		    text-decoration: none;
+		    border-radius: 4px;
+		    margin-top: 10px;
+		    cursor: pointer;
+		    border: none;
+		    transition: background-color 0.3s ease, transform 0.2s ease;
+		}
+
+		.btn-back:hover {
+		    background-color: #218838; /* Màu xanh lá đậm hơn khi hover */
+		    transform: scale(1.05); /* Hiệu ứng phóng to nhẹ khi hover */
+		}
+
+		.btn-back:active {
+		    background-color: #1e7e34; /* Màu tối hơn khi nhấn */
+		    transform: scale(0.95); /* Hiệu ứng thu nhỏ nhẹ khi nhấn */
+		}
+		.btn-container-center {
+		    text-align: center; /* Căn giữa nội dung bên trong */
+		    margin-top: 20px;  /* Thêm khoảng cách phía trên nếu cần */
+		}

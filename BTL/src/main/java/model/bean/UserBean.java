@@ -18,7 +18,7 @@ public class UserBean {
         this.email = email;
         this.password = password;
     }
-    
+
     public UserBean(int id,String fullname,String email, String password) {
     	this.id = id;
     	this.fullname = fullname;
@@ -34,7 +34,7 @@ public class UserBean {
     public void setId(int id) {
         this.id = id;
     }
-    
+
     public String getFullname() {
         return fullname;
     }

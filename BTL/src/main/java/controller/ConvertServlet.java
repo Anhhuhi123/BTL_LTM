@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -99,12 +100,34 @@ public class ConvertServlet extends HttpServlet {
 			threads.add(thread);
 		    thread.start();
 		}
-		   // Chờ tất cả các luồng hoàn thành
-		for (ConverterThread thread : threads) {
+		   // Chờ tất cả các luồng hoàn thành với xử lý timeout
+		long timeout = 30000; // Thời gian chờ tối đa là 30 giây
+		long startTime = System.currentTimeMillis();
+
+		while (!threads.isEmpty()) {
+		    for (Iterator<ConverterThread> iterator = threads.iterator(); iterator.hasNext();) {
+		        ConverterThread thread = iterator.next();
+		        if (!thread.isAlive()) {
+		            iterator.remove(); // Xóa luồng đã hoàn thành
+		        }
+		    }
+
+		    // Kiểm tra xem đã vượt quá thời gian chờ chưa
+		    if (System.currentTimeMillis() - startTime > timeout) {
+		        System.out.println("Timeout occurred while waiting for threads to complete.");
+		        // Có thể hủy các luồng nếu cần thiết
+		        for (ConverterThread thread : threads) {
+		            // Hủy luồng nếu cần thiết (tùy thuộc vào logic của bạn)
+		             thread.interrupt(); // Chú ý: Hủy luồng có thể không an toàn
+		        }
+		        break; // Thoát khỏi vòng lặp
+		    }
+
+		    // Ngủ một chút trước khi kiểm tra lại
 		    try {
-		            thread.join();
+		        Thread.sleep(100); // Ngủ 100ms
 		    } catch (InterruptedException e) {
-		            e.printStackTrace();
+		        e.printStackTrace();
 		    }
 		}
 		// lưu data vào trong db
@@ -190,7 +213,7 @@ public class ConvertServlet extends HttpServlet {
 	    response.setContentType(contentType);
 
 	    // Thiết lập Header để tải tệp về
-	    response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+	    response.setHeader("Content-Disposition", "attachment; filename=" + fileName.substring(fileName.indexOf('_') + 1));
 	    response.setContentLength((int) file.length());
 
 	    // Đọc và gửi tệp cho client

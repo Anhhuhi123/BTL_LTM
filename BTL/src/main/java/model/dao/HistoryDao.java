@@ -14,11 +14,11 @@ public class HistoryDao {
 	  public List<HistoryBean> getHistoryByUserId(int userId) {
 	  List<HistoryBean> listHistory = new ArrayList<>();
 	  String query = "SELECT * FROM history WHERE userId = ?";
-	
+
 	  try (Connection connection = DatabaseConnection.getConnection();
 	      PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 	      preparedStatement.setInt(1, userId);
-	
+
 	      try (ResultSet resultSet = preparedStatement.executeQuery()) {
 	          while (resultSet.next()) {
 	        	  	 int id = resultSet.getInt("id");
@@ -32,7 +32,7 @@ public class HistoryDao {
 	  } catch (SQLException e) {
 	      e.printStackTrace();
 	  }
-	
+
 	  return listHistory;
 	}
 

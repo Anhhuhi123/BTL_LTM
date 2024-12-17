@@ -9,13 +9,13 @@ public class HistoryBean {
     private String date;
 
     public HistoryBean() {}
-    
+
     public HistoryBean(int userId,String filePdf, String fileDocx) {
     	this.userId = userId;
         this.filePdf = filePdf;
         this.fileDocx = fileDocx;
     }
-    
+
     public HistoryBean(int id,int userId,String filePdf, String fileDocx,String date) {
     	this.id = id;
     	this.userId = userId;

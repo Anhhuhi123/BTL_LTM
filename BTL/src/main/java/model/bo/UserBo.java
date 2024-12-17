@@ -23,7 +23,7 @@ public class UserBo {
     public boolean checkEmailExists(UserBean user) throws Exception {
         return userDao.isEmailExists(user.getEmail());
     }
-    
-  
+
+
 }
 
