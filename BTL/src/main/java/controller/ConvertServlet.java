@@ -3,7 +3,6 @@ package controller;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -26,10 +25,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 
 import model.bean.HistoryBean;
-import model.bean.UserBean;
 import model.bo.ConverterThread;
 import model.bo.HistoryBo;
-import model.bo.UserBo;
 
 
 
@@ -45,7 +42,7 @@ public class ConvertServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 	}
 
 	@Override
@@ -101,7 +98,7 @@ public class ConvertServlet extends HttpServlet {
 		    thread.start();
 		}
 		   // Chờ tất cả các luồng hoàn thành với xử lý timeout
-		long timeout = 30000; // Thời gian chờ tối đa là 30 giây
+		long timeout = 180000; // Thời gian chờ tối đa là 180 giây
 		long startTime = System.currentTimeMillis();
 
 		while (!threads.isEmpty()) {
@@ -132,11 +129,11 @@ public class ConvertServlet extends HttpServlet {
 		}
 		// lưu data vào trong db
 		saveHistoryConvert(request,filesNameUserUpload,filesNameInServer);
-		// respone về cho client 
+		// respone về cho client
 		sendFileConvertToClient(request,response,filesNameInServer);
 
 	}
-	
+
 	private void saveHistoryConvert(HttpServletRequest request,List<String> filesNameUserUpload,List<String> filesNameInServer) {
 		for(int i=0 ; i < filesNameUserUpload.size();i++) {
 			int userId = (int) request.getSession().getAttribute("userId");
@@ -151,10 +148,10 @@ public class ConvertServlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 	}
-	
+
 	private void sendFileConvertToClient(HttpServletRequest request, HttpServletResponse response, List<String> filesNameInServer) throws IOException {
 		   // Kiểm tra xem có nhiều hơn 1 tệp hay không
 	    if (filesNameInServer.size() > 1) {
@@ -243,7 +240,7 @@ public class ConvertServlet extends HttpServlet {
 	        outputStream.flush();
 	    }
 	}
-	
+
 	// Phương thức xác định loại tệp dựa trên phần mở rộng
 	private String getContentType(String fileName) {
 	    if (fileName.endsWith(".zip")) {

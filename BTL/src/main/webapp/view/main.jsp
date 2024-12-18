@@ -43,14 +43,23 @@
                 <a  class="linkedin"><i class="bi bi-linkedin"></i></a>
             </div>
 
-            <nav id="navmenu" class="navmenu">
+            <!-- <nav id="navmenu" class="navmenu">
                 <ul>
                     <li><a href="test.jsp" class="nav-link active"><i class="bi bi-house navicon"></i>Home</a></li>
                     <li><a href="./historyConvert"><i class="bi bi-hdd-stack navicon"></i> History</a></li>
                     <li><a href="./logout"><i class="bi bi-box-arrow-right navicon"></i> Log out</a></li>
-                    
+                     
                 </ul>
-            </nav>
+            </nav> -->
+            
+            <nav id="navmenu" class="navmenu">
+			    <ul>
+			        <li><a href="./main.jsp"><i class="bi bi-house navicon"></i>Home</a></li>
+			        <li><a href="./historyConvert" class="nav-link" data-page="historyConvert.jsp"><i class="bi bi-hdd-stack navicon"></i> History</a></li>
+			        <li><a href="./logout"><i class="bi bi-box-arrow-right navicon"></i> Log out</a></li>
+			    </ul>
+			</nav>
+            
         </header>
 
         <main id="main" class="main">
@@ -62,55 +71,6 @@
     <!-- Thêm jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Update JavaScript -->
-    <script>
-        (function() {
-            "use strict";
-            
-            // Header toggle function
-            const headerToggleBtn = document.querySelector('.header-toggle');
-            function headerToggle() {
-                document.querySelector('#header').classList.toggle('header-show');
-                headerToggleBtn.classList.toggle('bi-list');
-                headerToggleBtn.classList.toggle('bi-x');
-            }
-            headerToggleBtn.addEventListener('click', headerToggle);
-
-            // Load content function
-            function loadContent(url) {
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    success: function(response) {
-                        $('#content-container').html(response);
-                    },
-                    error: function() {
-                        $('#content-container').html('<p>Error loading content</p>');
-                    }
-                });
-            }
-
-            // Navigation click handlers
-            $('.nav-link').click(function(e) {
-                e.preventDefault();
-                
-                // Remove active class from all links
-                $('.nav-link').removeClass('active');
-                // Add active class to clicked link
-                $(this).addClass('active');
-                
-                // Load content
-                const page = $(this).data('page');
-                loadContent(page);
-                
-                // Close mobile menu if open
-                if (document.querySelector('.header-show')) {
-                    headerToggle();
-                }
-            });
-
-            // Load home content by default
-            loadContent('convert.jsp');
-        })();
-    </script>
+    <script src="../JS/main.js"></script>
 </body>
 </html>
