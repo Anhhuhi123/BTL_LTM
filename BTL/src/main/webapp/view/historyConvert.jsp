@@ -58,9 +58,9 @@
             }
             %>
         </table>
-  <!--       <div class="btn-container-center">
+        <div class="btn-container-center">
             <button type="button" class="btn btn-back" onclick="history.back()">Quay lại</button>
-        </div> -->
+        </div>
     </div>
 </body>
 </html>

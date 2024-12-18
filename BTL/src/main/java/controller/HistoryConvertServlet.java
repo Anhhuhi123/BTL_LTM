@@ -30,7 +30,6 @@ public class HistoryConvertServlet extends HttpServlet {
 					e.printStackTrace();
 				}
 			   request.getRequestDispatcher("/view/historyConvert.jsp").forward(request, response);
-//				   response.sendRedirect(request.getContextPath() + "/view/historyConvert.jsp");
 		   }
 		   else {
 			   request.getRequestDispatcher("/view/login.jsp").forward(request, response);
